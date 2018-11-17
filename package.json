@@ -1,0 +1,18 @@
+{
+  "name": "dynamic-twitch-bot",
+  "version": "1.0.0",
+  "description": "Dynamically customizable twitch IRC bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node example/example.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dan Whitacre",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^17.7.0",
+    "joi": "^14.0.6",
+    "minimist": "^1.2.0",
+    "tmi.js": "^1.2.1"
+  }
+}
