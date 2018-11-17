@@ -100,7 +100,7 @@ class DynamicTwitchBot {
   _onMessageHandler(target, userstate, message, self) {
     if (self) return;
 
-    this._log(`[${target} (${userstate['message-type']})] ${userstate.username}: ${msg}`);
+    this._log(`[${target} (${userstate['message-type']})] ${userstate.username}: ${message}`);
 
     if (message.substring(0, 1) !== this._config.twitch.commandPrefix) return;
 
@@ -108,9 +108,9 @@ class DynamicTwitchBot {
     const command = this.getCmd(commandName);
 
     if (command) {
-      this._log(`* Execute command ${command} for ${commandName} by ${userstate.username}`);
+      this._log(`* Execute command '${commandName}' by ${userstate.username}`);
     } else {
-      this._log(`* Unknown command ${commandName} from ${userstate.username}`);
+      this._log(`* Unknown command '${commandName}' from ${userstate.username}`);
     }
   }
 
@@ -141,16 +141,32 @@ class DynamicTwitchBot {
       }
     });
 
+    this._twitchClient.on('connected', this._onConnectedHandler.bind(this));
+    this._twitchClient.on('disconnected', this._onDisconnectedHandler.bind(this));
+    this._twitchClient.on('message', this._onMessageHandler.bind(this));
+
     this._dirtyConfig = false;
   }
 
   async stop() {
+    if (!this._serverRunning) return; // server not running do nothing
 
+    async function stopClient() {
+      await this._twitchClient.disconnect();
+    }
+
+    async function stopServer() {
+      await this._server.stop();
+      this._log(`Server stopped running.`);
+    }
+
+    await Promise.all([ stopClient.bind(this)(), stopServer.bind(this)() ]);
 
     this._serverRunning = false;
   }
 
   async start() {
+    if (this._serverRunning) return; // server already running do nothing
     if (this._dirtyConfig) throw new Error('Must run init first and after config has been updated.');
     this._serverRunning = true;
 
@@ -160,14 +176,10 @@ class DynamicTwitchBot {
     }
 
     async function startClient() {
-      this._twitchClient.on('connected', this._onConnectedHandler.bind(this));
-      this._twitchClient.on('disconnected', this._onDisconnectedHandler.bind(this));
-      this._twitchClient.on('message', this._onMessageHandler.bind(this));
-
       await this._twitchClient.connect();
     }
 
-    return Promise.all([ startServer.bind(this)(), startClient.bind(this)() ]);
+    await Promise.all([ startServer.bind(this)(), startClient.bind(this)() ]);
   }
 
   addCmd() {
