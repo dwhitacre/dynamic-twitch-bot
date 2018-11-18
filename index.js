@@ -2,6 +2,8 @@ const Joi = require('joi');
 const Hapi = require('hapi');
 const tmi = require('tmi.js');
 
+require('./src/handleSIGINT');
+
 const {
   bot: botSchema
 } = require('./src/schema/schema');

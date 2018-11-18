@@ -13,5 +13,7 @@ dtBot.start()
   .then(() => {
     setTimeout(() => {
       dtBot.stop();
-    }, 30 * 1000)
+    }, 5 * 60 * 1000);
+
+    dtBot.addCmd({});
   });
