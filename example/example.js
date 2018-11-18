@@ -4,7 +4,7 @@ const dtBot = new DynamicTwitchBot({
   twitch: {
     username: process.env.TWITCH_USERNAME,
     token: process.env.TWITCH_TOKEN,
-    channels: ['c3mush']
+    channels: ['rocketleague']
   }
 });
 
