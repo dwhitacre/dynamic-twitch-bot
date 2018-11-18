@@ -9,4 +9,9 @@ const dtBot = new DynamicTwitchBot({
 });
 
 dtBot.init();
-dtBot.start();
+dtBot.start()
+  .then(() => {
+    setTimeout(() => {
+      dtBot.stop();
+    }, 30 * 1000)
+  });

@@ -105,10 +105,10 @@ class DynamicTwitchBot {
     log(message, this._config.loggingEnabled);
   }
 
-  _onMessageHandler(target, userstate, message, self) {
+  async _onMessageHandler(target, userstate, message, self) {
     if (self) return;
 
-    this._log(`[${target} (${userstate['message-type']})] ${userstate.username}: ${message}`);
+    this._log(`[${new Date().toISOString()} ${target} (${userstate['message-type']})] ${userstate.username}: ${message}`);
 
     if (message.substring(0, 1) !== this._config.twitch.commandPrefix) return;
 
@@ -119,7 +119,7 @@ class DynamicTwitchBot {
 
     if (command) {
       this._log(`* Execute command '${commandName}' by ${userstate.username}`);
-      this.execCmd(command, {
+      await this.execCmd(command, {
         commandName,
         target,
         userstate,
@@ -174,7 +174,7 @@ class DynamicTwitchBot {
 
     async function stopServer() {
       await this._server.stop();
-      this._log(`Server stopped running.`);
+      this._log(`* Server stopped running.`);
     }
 
     await Promise.all([ stopClient.bind(this)(), stopServer.bind(this)() ]);
@@ -189,7 +189,7 @@ class DynamicTwitchBot {
 
     async function startServer() {
       await this._server.start();
-      this._log(`Server running at: ${this._server.info.uri}..`);
+      this._log(`* Server running at: ${this._server.info.uri}..`);
     }
 
     async function startClient() {
@@ -217,7 +217,7 @@ class DynamicTwitchBot {
     return clearCmd.bind(this)();
   }
 
-  execCmd(commandName, state) {
+  async execCmd(commandName, state) {
     if (typeof commandName === 'object') commandName = commandName.name;
     return execCmd.bind(this)(commandName, state);
   }

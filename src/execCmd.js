@@ -1,8 +1,11 @@
-function execCmd(commandName, state) {
+async function execCmd(commandName, state) {
   const command = this.getCmd(commandName);
   if (!command) return; // not a command so do nothing
 
-  this._log(`* execCmd ${commandName}`);
+  command.validate(state)
+    .then(async () => {
+      await command.action(state);
+    });
 }
 
 module.exports = execCmd;
