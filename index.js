@@ -8,6 +8,13 @@ const {
 
 const log = require('./src/log');
 
+const addCmd = require('./src/addCmd');
+const clearCmd = require('./src/clearCmd');
+const editCmd = require('./src/editCmd');
+const execCmd = require('./src/execCmd');
+const getCmd = require('./src/getCmd');
+const rmCmd = require('./src/rmCmd');
+
 class DynamicTwitchBot {
   constructor(config) {
     const { error, value } = Joi.validate(config, botSchema.full);
@@ -16,6 +23,7 @@ class DynamicTwitchBot {
     this._config = value;
     this._serverRunning = false;
     this._dirtyConfig = true;
+    this._commands = [];
   }
 
   get twitchSettings() {
@@ -104,11 +112,20 @@ class DynamicTwitchBot {
 
     if (message.substring(0, 1) !== this._config.twitch.commandPrefix) return;
 
-    const commandName = message.slice(1).split(' ')[0];
+    const parse = message.slice(1).split(' ');
+    const commandName = parse[0];
+    const rest = parse.splice(1).join(' ');
     const command = this.getCmd(commandName);
 
     if (command) {
       this._log(`* Execute command '${commandName}' by ${userstate.username}`);
+      this.execCmd(command, {
+        commandName,
+        target,
+        userstate,
+        rawMessage: message,
+        rest
+      });
     } else {
       this._log(`* Unknown command '${commandName}' from ${userstate.username}`);
     }
@@ -182,24 +199,31 @@ class DynamicTwitchBot {
     await Promise.all([ startServer.bind(this)(), startClient.bind(this)() ]);
   }
 
-  addCmd() {
-
+  addCmd(command) {
+    return addCmd.bind(this)(command);
   }
 
-  rmCmd() {
-
+  rmCmd(commandName) {
+    if (typeof commandName === 'object') commandName = commandName.name;
+    return rmCmd.bind(this)(commandName);
   }
 
-  editCmd() {
-
+  editCmd(commandName, edits) {
+    if (typeof commandName === 'object') commandName = commandName.name;
+    return editCmd.bind(this)(commandName, edits);
   }
 
   clearCmd() {
+    return clearCmd.bind(this)();
+  }
 
+  execCmd(commandName, state) {
+    if (typeof commandName === 'object') commandName = commandName.name;
+    return execCmd.bind(this)(commandName, state);
   }
 
   getCmd(commandName) {
-    return {};
+    return getCmd.bind(this)(commandName);
   }
 }
 
