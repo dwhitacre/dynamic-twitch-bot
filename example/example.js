@@ -1,26 +1,22 @@
-const DynamicTwitchBot = require('../index.js');
+require('./handle_sigint');
+
+const DynamicTwitchBot = require('../dynamic_twitch_bot.js');
 
 const dtBot = new DynamicTwitchBot({
-  twitch: {
+  twitchClient: {
     username: process.env.TWITCH_USERNAME,
     token: process.env.TWITCH_TOKEN,
-    channels: ['mellana']
+    channels: ['danonthemoon']
   }
 });
 
 dtBot.init();
-dtBot.start()
-  .then(() => {
-    setTimeout(() => {
-      dtBot.stop();
-    }, 5 * 60 * 1000);
-
-    dtBot.addCmd({
-      name: 'info',
-      alias: 'i',
-      validate: async ({ name, args, flags, state }) => {
-        console.log({ name, args, flags, state});
-
-      }
-    });
-  });
+dtBot.addRule({
+  name: 'echo',
+  aliases: 'e',
+  args: 'message',
+  handler: async (params) => {
+    return params.args.message;
+  }
+});
+dtBot.start();
