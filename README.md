@@ -14,7 +14,7 @@ This is very much in progress and subject to change at the moment. From here on 
 
 #### 0.2.x
 
-= [x] refactor, reswizzle
+- [x] refactor, reswizzle
 - [x] basic test coverage
 - [x] dynamically build API and CLI from rules
 - [ ] better test coverage
