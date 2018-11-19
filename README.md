@@ -24,6 +24,7 @@ This is very much in progress and subject to change at the moment. From here on 
 - [ ] helper functions on top of existing API
 - [ ] extend CLI
 - [ ] extend API
+- [ ] basic storage
 
 #### 1.0.x
 
