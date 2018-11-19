@@ -163,7 +163,7 @@ class TwitchClient {
   }
 
   async whisper(target, message) {
-    await this_client.whisper(target, message);
+    await this._client.whisper(target, message);
     this._log(`[${new Date().toISOString()} ${target} (whisper) <sent>] ${this._username}: ${message}`);
   }
 
