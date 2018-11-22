@@ -96,9 +96,6 @@ class HapiServer {
     await this._server.start();
 
     this._log({
-      id: this._id,
-      from,
-      type: 'internal',
       message: `Server running at ${this._server.info.uri}...`
     });
   }
@@ -110,9 +107,6 @@ class HapiServer {
     this._running = false;
 
     this._log({
-      id: this._id,
-      from,
-      type: 'internal',
       message: `Stopped server.`
     });
   }
@@ -159,6 +153,12 @@ class HapiServer {
   }
 
   _log(message) {
+    message = {
+      id: this._id,
+      from,
+      type: 'internal',
+      ...message,
+    };
     log(message, this._logEnabled);
   }
 }
