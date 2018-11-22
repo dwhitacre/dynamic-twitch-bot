@@ -1,19 +1,41 @@
 const Boom = require('boom');
 const Joi = require('joi');
+const uuid = require('uuid');
+
+const from = 'hapi_handler';
+const target = 'rest';
 
 const handler = async (request, h, self) => {
   if (!request.payload) return Boom.badRequest('request must have a payload');
   const payload = request.payload;
 
-  self._log(`[${new Date().toISOString()} rest <received>] ${JSON.stringify({ payload, params: request.query })}`);
+  const id = uuid.v1();
+
+  self._log({
+    id,
+    from,
+    target,
+    type: 'received',
+    message: `${JSON.stringify({ payload, params: request.query })}`
+  });
 
   const route = self.getRoute(payload.name);
   if (!route) {
-    self._log(`Unknown route: ${payload.name}`);
+    self._log({
+      id,
+      from,
+      type: 'internal',
+      message: `Unknown route: ${payload.name}`
+    });
     return Boom.notFound(`request name '${payload.name}' does not exist`);
   }
   if (!route.enabled) {
-    self._log(`Route currently disabled: ${route.name}`);
+    self._log({
+      id,
+      from,
+      type: 'internal',
+      message: `Route currently disabled: ${route.name}`
+    });
     return Boom.notImplemented(`request name '${route.name}' not currently enabled`);
   }
 
@@ -30,20 +52,27 @@ const handler = async (request, h, self) => {
   const response = await route.handler({
     route,
     name: payload.name,
-    invokeType: 'route',
+    target,
+    messageType: 'route',
+    messageRaw: '',
     args,
     flags,
-    Joi,
-    Boom,
     self
   });
 
   const fullResponse = {
     message: response,
     name: payload.name
-  }
+  };
 
-  self._log(`[${new Date().toISOString()} rest <sent>] ${JSON.stringify(fullResponse)}`);
+  self._log({
+    id,
+    from,
+    target,
+    type: 'sent',
+    message: `${JSON.stringify(fullResponse)}`
+  });
+
   return fullResponse;
 };
 

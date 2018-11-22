@@ -1,9 +1,13 @@
 const Hapi = require('hapi');
 const Joi = require('joi');
+const uuid = require('uuid');
 
 const { server: schema } = require('./schema');
 const Route = require('./route');
 const handler = require('./handler');
+const log = require('../log');
+
+const from = 'hapi_server';
 
 class HapiServer {
   constructor(settings) {
@@ -19,6 +23,7 @@ class HapiServer {
     // state
     this._dirty = true;
     this._running = false;
+    this._id = uuid.v1();
 
     // implementation
     this._server;
@@ -50,7 +55,8 @@ class HapiServer {
   getState() {
     return {
       running: this._running,
-      dirty: this._dirty
+      dirty: this._dirty,
+      id: this._id
     };
   }
 
@@ -89,7 +95,12 @@ class HapiServer {
     this._running = true;
     await this._server.start();
 
-    this._log(`Server running at ${this._server.info.uri}...`);
+    this._log({
+      id: this._id,
+      from,
+      type: 'internal',
+      message: `Server running at ${this._server.info.uri}...`
+    });
   }
 
   async stop() {
@@ -98,7 +109,12 @@ class HapiServer {
     await this._server.stop();
     this._running = false;
 
-    this._log(`Stopped server.`);
+    this._log({
+      id: this._id,
+      from,
+      type: 'internal',
+      message: `Stopped server.`
+    });
   }
 
   addRoute(routeDef) {
@@ -143,8 +159,7 @@ class HapiServer {
   }
 
   _log(message) {
-    if (!this._logEnabled) return;
-    console.log(`hapi_server: ${message}`);
+    log(message, this._logEnabled);
   }
 }
 

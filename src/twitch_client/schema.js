@@ -3,8 +3,8 @@ const Joi = require('joi');
 const username = Joi.string().required();
 const token = Joi.string().required();
 const channels = Joi.array().items(Joi.string()).single().default([]);
-const commandPrefix = Joi.string().default('!');
-const channelPrefix = Joi.string().default('#');
+const commandPrefix = Joi.string().max(1).default('!');
+const channelPrefix = Joi.string().max(1).default('#');
 const logEnabled = Joi.boolean().default(true);
 
 const client = Joi.object().keys({

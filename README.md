@@ -6,37 +6,21 @@ Dynamically customizable twitch IRC bot. Generate twitch IRC CLI and API from ru
 
 This is very much in progress and subject to change at the moment. From here on out I will do my best not to break functionality across minor versions, but no promises. Future known implementation plans are below.
 
-#### 0.1.x
-
 - [x] twitch and hapi services
 - [x] rules
 - [x] node api for configuring twitch, hapi, rules
-
-#### 0.2.x
-
 - [x] refactor, reswizzle
 - [x] basic test coverage
 - [x] dynamically build API and CLI from rules
+- [x] cleanup and standardize handlers
 - [ ] better test coverage
-
-#### 0.x
-
+- [x] better logging
 - [ ] helper functions on top of existing API
 - [ ] extend CLI
 - [ ] extend API
 - [ ] basic storage
-
-#### 1.0.x
-
 - [ ] add RBAC
-
-#### 2.0.x
-
 - [ ] add persistent storage
-
-#### x.x.x
-
-- [ ] ?
 
 ### How-to
 
@@ -50,7 +34,9 @@ Subject to change, but at the moment feel its relatively stable. Until I get the
 
 ### Contributing
 
-Best way to contact me is on [twitch](https://twitch.tv/danonthemoon). If you wish to contribute, please either open an issue or contact me first.
+Best way to contact me is on [twitch](https://twitch.tv/danonthemoon) or on discord (danonthemoon#3426). If you wish to contribute, please contact me first. We will get an issue for you to work on and your dev env setup.
 
-`npm start` runs `example/example.js` which is the most basic version of this impl.
+`npm start` runs `example/watch.js` watching the src code for changes. It just starts up a basic example of the bot.
+
+`npm run test` to run the tests.
 

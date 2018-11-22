@@ -1,11 +1,15 @@
 const Tmi = require('tmi.js');
 const Joi = require('joi');
+const uuid = require('uuid');
 
 const { client: schema } = require('./schema');
 const Command = require('./command');
 const onConnectedHandler = require('./on_connected_handler');
 const onDisconnectedHandler = require('./on_disconnected_handler');
 const onMessageHandler = require('./on_message_handler');
+const log = require('../log');
+
+const from = 'twitch_client';
 
 class TwitchClient {
   constructor(settings) {
@@ -23,6 +27,7 @@ class TwitchClient {
     // state
     this._dirty = true;
     this._running = false;
+    this._id = uuid.v1();
 
     // implementation
     this._client;
@@ -59,7 +64,8 @@ class TwitchClient {
   getState() {
     return {
       running: this._running,
-      dirty: this._dirty
+      dirty: this._dirty,
+      id: this._id
     };
   }
 
@@ -93,7 +99,9 @@ class TwitchClient {
     
     await this._client.connect();
 
-    this._log(`Client running...`);
+    this._log({
+      message: `Client running...`
+    });
   }
 
   async stop() {
@@ -103,7 +111,9 @@ class TwitchClient {
 
     this._running = false;
 
-    this._log(`Stopped client.`);
+    this._log({
+      message: `Stopped client.`
+    });
   }
 
   addCommand(commandDef) {
@@ -153,23 +163,28 @@ class TwitchClient {
     } else if (type === 'whisper') {
       await this.whisper(target, message);
     } else {
-      this._log(`unrecognized message type: target: ${target}, type: ${type}, message: ${message}`);
+      this._log({
+        message: `unrecognized message type: target: ${target}, type: ${type}, message: ${message}`
+      });
     }
   }
 
   async chat(target, message) {
     await this._client.say(target, message);
-    this._log(`[${new Date().toISOString()} ${target} (chat) <sent>] ${this._username}: ${message}`);
   }
 
   async whisper(target, message) {
     await this._client.whisper(target, message);
-    this._log(`[${new Date().toISOString()} ${target} (whisper) <sent>] ${this._username}: ${message}`);
   }
 
   _log(message) {
-    if (!this._logEnabled) return;
-    console.log(`twitch_client: ${message}`);
+    message = {
+      id: this._id,
+      from,
+      type: 'internal',
+      ...message,
+    };
+    log(message, this._logEnabled);
   }
 }
 
