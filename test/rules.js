@@ -23,20 +23,17 @@ describe('rules', () => {
     it('should throw an err if the rule already exists', () => {
       rules._rules.push(new Rule({
         name: 'test',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       expect(() => rules.add({
         name: 'test',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       })).to.throw();
     });
     it('should add the rule if it has no aliases', () => {
       rules.add({
         name: 'test',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       });
       const rule = rules._rules.pop();
       expect(rule.name).to.equal('test');
@@ -46,8 +43,7 @@ describe('rules', () => {
       rules.add({
         name: 'test',
         aliases: ['t', 'e'],
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       });
       expect(rules._rules).to.have.length(3);
       let foundRule = false;
@@ -80,16 +76,14 @@ describe('rules', () => {
     it('should return undefined if not rule is found', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       expect(rules.get('test')).to.be.undefined;
     });
     it('should return the rule if the rule is found', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       const rule = rules.get('findme');
       expect(rule).to.exist;
@@ -100,15 +94,13 @@ describe('rules', () => {
       rules._rules.push(new Rule({
         name: 'findme',
         aliases: ['f'],
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules._rules.push(new Rule({
         name: 'f',
         isAlias: true,
         aliasTo: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       const rule = rules.get('f');
       expect(rule).to.exist;
@@ -124,8 +116,7 @@ describe('rules', () => {
     it('should do nothing if the rule doesnt exist', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.rm('test');
       expect(rules._rules).to.have.length(1);
@@ -133,8 +124,7 @@ describe('rules', () => {
     it('should remove the rule if it has no aliases', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.rm('findme');
       expect(rules._rules).to.have.length(0);
@@ -143,22 +133,19 @@ describe('rules', () => {
       rules._rules.push(new Rule({
         name: 'findme',
         aliases: ['f', 'i'],
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules._rules.push(new Rule({
         name: 'f',
         isAlias: true,
         aliasTo: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules._rules.push(new Rule({
         name: 'i',
         isAlias: true,
         aliasTo: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.rm('findme');
       expect(rules._rules).to.have.length(0);
@@ -167,15 +154,13 @@ describe('rules', () => {
       rules._rules.push(new Rule({
         name: 'findme',
         aliases: ['f'],
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules._rules.push(new Rule({
         name: 'f',
         isAlias: true,
         aliasTo: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.rm('f');
       expect(rules._rules).to.have.length(1);
@@ -191,8 +176,7 @@ describe('rules', () => {
     it('should throw err if the rule doesnt exist', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       expect(() => rules.edit({ name: 'test' })).to.throw();
     });
@@ -200,23 +184,20 @@ describe('rules', () => {
       rules._rules.push(new Rule({
         name: 'findme',
         aliases: ['f'],
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules._rules.push(new Rule({
         name: 'f',
         isAlias: true,
         aliasTo: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       expect(() => rules.edit({ name: 'f' })).to.throw();
     });
     it('should merge the new def with the existing def and create a new rule', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.edit({
         name: 'findme',
@@ -229,8 +210,7 @@ describe('rules', () => {
     it('should throw err if the new def merged with existing def doesnt match schema', () => {
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       expect(() => rules.edit({ name: 'findme', enabled: 'wow' })).to.throw();
     });
@@ -240,8 +220,7 @@ describe('rules', () => {
       const rules = new Rules();
       rules._rules.push(new Rule({
         name: 'findme',
-        handler: async () => {},
-        lib: {}
+        handler: async () => {}
       }));
       rules.clear();
       expect(rules._rules).to.have.length(0);

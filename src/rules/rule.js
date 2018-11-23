@@ -15,7 +15,6 @@ class Rule {
     this._handler = value.handler;
     this._isAlias = value.isAlias;
     this._aliasTo = value.aliasTo;
-    this._lib = value.lib;
   }
 
   getDef() {
@@ -27,8 +26,7 @@ class Rule {
       flags: this._flags,
       handler: this._handler,
       isAlias: this._isAlias,
-      aliasTo: this._aliasTo,
-      lib: this._lib
+      aliasTo: this._aliasTo
     };
   }
 
@@ -68,10 +66,6 @@ class Rule {
 
   get aliasTo() {
     return this._aliasTo;
-  }
-
-  get lib() {
-    return this._lib;
   }
 }
 
