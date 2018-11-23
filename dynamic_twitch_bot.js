@@ -52,10 +52,7 @@ class DynamicTwitchBot {
   }
 
   addRule(ruleDef) {
-    const addedRules = this._rules.add({
-      ...ruleDef,
-      lib: this
-    });
+    const addedRules = this._rules.add(ruleDef);
 
     if (!addedRules) return;
     if (addedRules.length <= 0) return [];
@@ -107,10 +104,7 @@ class DynamicTwitchBot {
   }
 
   editRule(ruleDef) {
-    const editedRule = this._rules.edit({
-      ...ruleDef,
-      lib: this
-    });
+    const editedRule = this._rules.edit(ruleDef);
 
     if (!editedRule) return;
 
