@@ -11,13 +11,15 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
 
   const id = uuid.v1();
 
+  const username = userstate.username;
+
   this._log({
     id,
     from,
     target,
     type: `${userstate['message-type']}_received`,
     message,
-    username: userstate.username
+    username
   });
 
   if (message.substring(0, 1) !== this.getSettings().commandPrefix) return;
@@ -31,7 +33,8 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
       id,
       from,
       type: 'internal',
-      message: `Unknown command: ${commandName}`
+      message: `Unknown command: ${commandName}`,
+      username
     });
     return;
   }
@@ -40,7 +43,18 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
       id,
       from,
       type: 'internal',
-      message: `Command currently disabled: ${command.name}`
+      message: `Command currently disabled: ${command.name}`,
+      username
+    });
+    return;
+  }
+  if (!this._parent.rbac.check(username, command.name)) {
+    this._log({
+      id,
+      from,
+      type: 'internal',
+      message: `User, ${username}, does not have access to command: ${command.name}`,
+      username
     });
     return;
   }
@@ -69,7 +83,8 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
     messageRaw: message,
     args,
     flags,
-    bot: this._parent
+    bot: this._parent,
+    username
   });
 
   this._log({
@@ -78,7 +93,7 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
     target,
     type: `${userstate['message-type']}_sent`,
     message: response,
-    username: userstate.username
+    username
   });
 
   if (response) this.say(target, userstate['message-type'], response); 

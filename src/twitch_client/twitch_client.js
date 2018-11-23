@@ -161,22 +161,27 @@ class TwitchClient {
 
   async say(target, type, message) {
     if (type === 'chat') {
-      await this.chat(target, message);
+      return await this.chat(target, message);
     } else if (type === 'whisper') {
-      await this.whisper(target, message);
+      return await this.whisper(target, message);
     } else {
       this._log({
         message: `unrecognized message type: target: ${target}, type: ${type}, message: ${message}`
       });
+      return false;
     }
   }
 
   async chat(target, message) {
+    if (!this._running) return false;
     await this._client.say(target, message);
+    return true;
   }
 
   async whisper(target, message) {
+    if (!this._running) return false;
     await this._client.whisper(target, message);
+    return true;
   }
 
   _log(message) {

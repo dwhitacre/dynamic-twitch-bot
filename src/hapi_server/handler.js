@@ -1,5 +1,4 @@
 const Boom = require('boom');
-const Joi = require('joi');
 const uuid = require('uuid');
 
 const from = 'hapi_handler';
@@ -11,12 +10,16 @@ const handler = async (request, h, self) => {
 
   const id = uuid.v1();
 
+  const user = self._parent.rbac.getUser(request.query.token);
+  const username = user ? user.name : undefined;
+
   self._log({
     id,
     from,
     target,
     type: 'received',
-    message: `${JSON.stringify({ payload, params: request.query })}`
+    message: `${JSON.stringify({ payload, params: request.query })}`,
+    username
   });
 
   const route = self.getRoute(payload.name);
@@ -25,7 +28,8 @@ const handler = async (request, h, self) => {
       id,
       from,
       type: 'internal',
-      message: `Unknown route: ${payload.name}`
+      message: `Unknown route: ${payload.name}`,
+      username
     });
     return Boom.notFound(`request name '${payload.name}' does not exist`);
   }
@@ -34,9 +38,20 @@ const handler = async (request, h, self) => {
       id,
       from,
       type: 'internal',
-      message: `Route currently disabled: ${route.name}`
+      message: `Route currently disabled: ${route.name}`,
+      username
     });
     return Boom.notImplemented(`request name '${route.name}' not currently enabled`);
+  }
+  if (!self._parent.rbac.check(username, route.name)) {
+    self._log({
+      id,
+      from,
+      type: 'internal',
+      message: `User, ${username}, does not have access to route: ${payload.name}`,
+      username
+    });
+    return Boom.forbidden(`request name '${route.name}' not permitted for user`);
   }
 
   const args = {};
@@ -57,7 +72,8 @@ const handler = async (request, h, self) => {
     messageRaw: '',
     args,
     flags,
-    bot: this._parent
+    bot: this._parent,
+    username
   });
 
   const fullResponse = {
@@ -70,7 +86,8 @@ const handler = async (request, h, self) => {
     from,
     target,
     type: 'sent',
-    message: `${JSON.stringify(fullResponse)}`
+    message: `${JSON.stringify(fullResponse)}`,
+    username
   });
 
   return fullResponse;

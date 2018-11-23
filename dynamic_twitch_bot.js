@@ -1,12 +1,14 @@
 const TwitchClient = require('./src/twitch_client/twitch_client');
 const HapiServer = require('./src/hapi_server/hapi_server');
 const Rules = require('./src/rules/rules');
+const RBAC = require('./src/rbac/rbac');
 
 class DynamicTwitchBot {
-  constructor({ twitchClient, hapiServer }) {
+  constructor({ twitchClient, hapiServer, rbac }) {
     this._twitchClient = new TwitchClient(twitchClient, this);
     this._hapiServer = new HapiServer(hapiServer, this);
     this._rules = new Rules();
+    this._rbac = new RBAC(rbac);
   }
 
   getSettings() {
@@ -49,6 +51,10 @@ class DynamicTwitchBot {
 
   get hapiServer() {
     return this._hapiServer;
+  }
+
+  get rbac() {
+    return this._rbac;
   }
 
   addRule(ruleDef) {
@@ -124,7 +130,7 @@ class DynamicTwitchBot {
       handler
     };
     this._hapiServer.editRoute(comRouteDef);
-    this._twitchClient.addCommand(comRouteDef);
+    this._twitchClient.editCommand(comRouteDef);
     aliases.forEach(alias => {
       this._hapiServer.editRoute({
         ...comRouteDef,

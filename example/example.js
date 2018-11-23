@@ -16,10 +16,19 @@ const dtBot = new DynamicTwitchBot({
     username: process.env.TWITCH_USERNAME,
     token: process.env.TWITCH_TOKEN,
     channels: ['danonthemoon']
-  }
+  },
+  //rbac: { enabled: false }
 });
 
 dtBot.init();
+dtBot.rbac.addRole('admin', {
+  can: ['echo'],
+  inherits: ['default']
+});
+dtBot.rbac.addRole('default', {
+  can: [ 'e' ]
+});
+dtBot.rbac.addUser('danonthemoon', 'admin');
 dtBot.addRule({
   name: 'echo',
   aliases: 'e',

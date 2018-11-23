@@ -139,64 +139,72 @@ describe('rbac', () => {
     });
     it('should ret false if the role doesnt contain the action and doesnt have inherited roles', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: {}
+        can: [ 'action' ],
+        inherits: []
       });
-      expect(rbac.checkRole('rule', 'nope')).to.be.false;
+      expect(rbac.checkRole('role', 'nope')).to.be.false;
     });
     it('should ret false if the role doesnt contain the action and inherited roles dont either', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: { role1: 1 }
+        can: [ 'action' ],
+        inherits: [ 'role1' ]
       });
       rbac._roles['role1'] = new Role({
-        can: { action1: 1 }
+        can: [ 'action1' ]
       });
-      expect(rbac.checkRole('rule', 'nope')).to.be.false;
+      expect(rbac.checkRole('role', 'nope')).to.be.false;
     });
     it('should ret true if the role contains the action', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: { role1: 1 }
+        can: [ 'action' ],
+        inherits: [ 'role1' ]
       });
       rbac._roles['role1'] = new Role({
-        can: { action1: 1 }
+        can: [ 'action1' ]
       });
-      expect(rbac.checkRole('rule', 'action')).to.be.false;
+      expect(rbac.checkRole('role', 'action')).to.be.true;
     });
     it('should ret true if the role doesnt contain the action, but inherited roles do', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: { role1: 1 }
+        can: [ 'action' ],
+        inherits: [ 'role1' ]
       });
       rbac._roles['role1'] = new Role({
-        can: { action1: 1 }
+        can: [ 'action1' ]
       });
-      expect(rbac.checkRole('rule', 'action1')).to.be.false;
+      expect(rbac.checkRole('role', 'action1')).to.be.true;
     });
     it('should ret true if the role doesnt contain the action, but inherited of inherited roles do', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: { role1: 1 }
+        can: [ 'action' ],
+        inherits: [ 'role1' ]
       });
       rbac._roles['role1'] = new Role({
-        can: { action1: 1 },
-        inherits: { role2: 1 }
+        can: [ 'action1' ],
+        inherits: [ 'role2' ]
       });
       rbac._roles['role2'] = new Role({
-        can: { action2: 1 }
+        can: [ 'action2' ]
       });
-      expect(rbac.checkRole('rule', 'action2')).to.be.false;
+      expect(rbac.checkRole('role', 'action2')).to.be.true;
     });
     it('should function if an inherited role does not exist', () => {
       rbac._roles['role'] = new Role({
-        can: { action: 1 },
-        inherits: { role2: 1 }
+        can: [ 'action' ],
+        inherits: [ 'role2' ]
       });
       rbac._roles['role1'] = new Role({
-        can: { action1: 1 }
+        can: [ 'action1' ]
       });
-      expect(rbac.checkRole('rule', 'action1')).to.be.false;
+      expect(rbac.checkRole('role', 'action1')).to.be.false;
+    });
+    it('should ret true if not enabled', () => {
+      rbac._enabled = false;
+      rbac._roles['role'] = new Role({
+        can: [ 'action' ],
+        inherits: []
+      });
+      expect(rbac.checkRole('role', 'nope')).to.be.true;
     });
   });
   describe('.addUser', () => {
@@ -206,7 +214,7 @@ describe('rbac', () => {
         logEnabled: false
       });
       rbac._roles['role'] = new Role({
-        can: { action: 1 }
+        can: [ 'action' ]
       });
     });
     it('should throw err if user already exists', () => {
@@ -338,7 +346,19 @@ describe('rbac', () => {
         logEnabled: false
       });
     });
-    it('should ret false if the user doesnt exist', () => {
+    it('should ret true if the user doesnt exist and default role has the action', () => {
+      rbac._roles[rbac._defaultRole] = new Role({
+        can: [ 'action' ]
+      });
+      expect(rbac.check('user', 'action')).to.be.true;
+    });
+    it('should ret false if the user doesnt exist and default role does not have the action', () => {
+      rbac._roles[rbac._defaultRole] = new Role({
+        can: [ 'action1' ]
+      });
+      expect(rbac.check('user', 'action')).to.be.false;
+    });
+    it('should ret false if the user doesnt exist and default role doesnt exist', () => {
       expect(rbac.check('user', 'action')).to.be.false;
     });
     it('should ret false if the role does not exist for the user', () => {
@@ -362,9 +382,17 @@ describe('rbac', () => {
         role: 'role'
       });
       rbac._roles['role'] = new Role({
-        can: { action: 1 }
+        can: [ 'action' ]
       });
-      expect(rbac.check('user', 'action')).to.be.false;
+      expect(rbac.check('user', 'action')).to.be.true;
+    });
+    it('should ret true if its not enabled', () => {
+      rbac._enabled = false;
+      rbac._users['user'] = new User({
+        name: 'user',
+        role: 'role'
+      });
+      expect(rbac.check('user', 'action')).to.be.true;
     });
   });
 });
