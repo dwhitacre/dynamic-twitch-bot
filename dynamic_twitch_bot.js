@@ -2,13 +2,15 @@ const TwitchClient = require('./src/twitch_client/twitch_client');
 const HapiServer = require('./src/hapi_server/hapi_server');
 const Rules = require('./src/rules/rules');
 const RBAC = require('./src/rbac/rbac');
+const StorageManager = require('./src/storage_manager/storage_manager');
 
 class DynamicTwitchBot {
-  constructor({ twitchClient, hapiServer, rbac }) {
+  constructor({ twitchClient, hapiServer, rbac, storageManager }) {
     this._twitchClient = new TwitchClient(twitchClient, this);
     this._hapiServer = new HapiServer(hapiServer, this);
     this._rules = new Rules();
     this._rbac = new RBAC(rbac);
+    this._storageManager = new StorageManager(storageManager);
   }
 
   getSettings() {
@@ -55,6 +57,10 @@ class DynamicTwitchBot {
 
   get rbac() {
     return this._rbac;
+  }
+
+  get storageManager() {
+    return this._storageManager;
   }
 
   addRule(ruleDef) {
