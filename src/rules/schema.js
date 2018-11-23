@@ -8,7 +8,6 @@ const flags = Joi.array().items(Joi.string().alphanum().max(50)).max(50).single(
 const handler = Joi.func().required();
 const isAlias = Joi.boolean().default(false);
 const aliasTo = Joi.string().alphanum().max(500);
-const lib = Joi.object().required();
 
 const rule = Joi.object().keys({
   name,
@@ -18,8 +17,7 @@ const rule = Joi.object().keys({
   flags,
   handler,
   isAlias,
-  aliasTo,
-  lib
+  aliasTo
 });
 
 module.exports = { rule };

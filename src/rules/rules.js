@@ -15,7 +15,6 @@ class Rules {
       aliasRules.push(new Rule({
         name: alias,
         handler: async () => {},
-        lib: {},
         isAlias: true,
         aliasTo: rule.name
       }));
