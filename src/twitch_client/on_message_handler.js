@@ -69,7 +69,7 @@ async function onMessageHandler(target, userstate, message, selfMessage) {
     messageRaw: message,
     args,
     flags,
-    self: this
+    bot: this._parent
   });
 
   this._log({
