@@ -12,7 +12,7 @@ const log = require('../log');
 const from = 'twitch_client';
 
 class TwitchClient {
-  constructor(settings) {
+  constructor(settings, parent) {
     const { error, value } = Joi.validate(settings, schema);
     if (error) throw error;
 
@@ -32,6 +32,8 @@ class TwitchClient {
     // implementation
     this._client;
     this._commands = [];
+
+    this._parent = parent;
   }
 
   getSettings() {

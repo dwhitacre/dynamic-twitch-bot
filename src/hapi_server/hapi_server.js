@@ -10,7 +10,7 @@ const log = require('../log');
 const from = 'hapi_server';
 
 class HapiServer {
-  constructor(settings) {
+  constructor(settings, parent) {
     const { error, value } = Joi.validate(settings, schema);
     if (error) throw error;
 
@@ -28,6 +28,8 @@ class HapiServer {
     // implementation
     this._server;
     this._routes = [];
+
+    this._parent = parent;
   }
 
   getSettings() {

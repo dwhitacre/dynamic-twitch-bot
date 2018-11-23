@@ -57,7 +57,7 @@ const handler = async (request, h, self) => {
     messageRaw: '',
     args,
     flags,
-    self
+    bot: this._parent
   });
 
   const fullResponse = {

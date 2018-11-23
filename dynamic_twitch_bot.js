@@ -4,8 +4,8 @@ const Rules = require('./src/rules/rules');
 
 class DynamicTwitchBot {
   constructor({ twitchClient, hapiServer }) {
-    this._twitchClient = new TwitchClient(twitchClient);
-    this._hapiServer = new HapiServer(hapiServer);
+    this._twitchClient = new TwitchClient(twitchClient, this);
+    this._hapiServer = new HapiServer(hapiServer, this);
     this._rules = new Rules();
   }
 
