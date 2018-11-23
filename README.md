@@ -2,7 +2,7 @@
 
 Dynamically customizable twitch IRC bot. Generate twitch IRC CLI and API from rule definitions.
 
-### Status
+### Road to 1.0
 
 This is very much in progress and subject to change at the moment. From here on out I will do my best not to break functionality across minor versions, but no promises. Future known implementation plans are below.
 
@@ -19,7 +19,7 @@ This is very much in progress and subject to change at the moment. From here on 
 - [ ] extend CLI
 - [ ] extend API
 - [ ] basic storage
-- [ ] add RBAC
+- [x] add RBAC
 - [ ] add persistent storage
 
 ### How-to

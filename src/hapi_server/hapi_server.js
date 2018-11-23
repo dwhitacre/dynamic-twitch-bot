@@ -5,6 +5,7 @@ const uuid = require('uuid');
 const { server: schema } = require('./schema');
 const Route = require('./route');
 const handler = require('./handler');
+const tokenHandler = require('./token_handler');
 const log = require('../log');
 
 const from = 'hapi_server';
@@ -18,6 +19,7 @@ class HapiServer {
     this._host = value.host;
     this._port = value.port;
     this._path = value.path;
+    this._tokenPath = value.tokenPath;
     this._logEnabled = value.logEnabled;
 
     // state
@@ -37,6 +39,7 @@ class HapiServer {
       host: this._host,
       port: this._port,
       path: this._path,
+      tokenPath: this._tokenPath,
       logEnabled: this._logEnabled
     };
   }
@@ -49,6 +52,8 @@ class HapiServer {
 
     this._host = value.host;
     this._port = value.port;
+    this._path = value.path;
+    this._tokenPath = value.tokenPath;
     this._logEnabled = value.logEnabled;
 
     this._dirty = true;
@@ -83,6 +88,21 @@ class HapiServer {
           payload: Joi.object().keys({
             name: Joi.string().alphanum().max(500).required()
           }).unknown().default()
+        }
+      }
+    });
+
+    this._server.route({
+      method: 'GET',
+      path: this._tokenPath,
+      handler: async(request, h) => {
+        return tokenHandler(request, h, self);
+      },
+      options: {
+        validate: {
+          query: Joi.object().keys({
+            user: Joi.string().alphanum().max(500).required()
+          }).default()
         }
       }
     })

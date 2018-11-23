@@ -23,13 +23,14 @@ class Role {
   }
 
   addCan(canName) {
-    if (this._can[canName]) return;
-    this._can[canName] = 1;
+    if (this._can.indexOf(canName) > -1) return;
+    this._can.push(canName);
   }
 
   rmCan(canName) {
-    if (!this._can[canName]) return;
-    delete this._can[canName];
+    const index = this._can.indexOf(canName);
+    if (index < 0) return;
+    this._can.splice(index, 1);
   }
 
   get inherits() {
@@ -37,13 +38,14 @@ class Role {
   }
 
   addInherits(inheritsName) {
-    if (this._inherits[inheritsName]) return;
-    this._inherits[inheritsName] = 1;
+    if (this._inherits.indexOf(inheritsName) > -1) return;
+    this._inherits.push(inheritsName);
   }
 
   rmInherits(inheritsName) {
-    if (!this._inherits[inheritsName]) return;
-    delete this._inherits[inheritsName];
+    const index = this._inherits.indexOf(inheritsName);
+    if (index < 0) return;
+    this._inherits.splice(index, 1);
   }
 }
 

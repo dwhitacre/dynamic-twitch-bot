@@ -3,12 +3,14 @@ const Joi = require('joi');
 const host = Joi.string().default('localhost');
 const port = Joi.number().min(1).max(65536).default(3000);
 const path = Joi.string().alphanum().max(50).default('/rules');
+const tokenPath = Joi.string().alphanum().max(50).default('/token');
 const logEnabled = Joi.boolean().default(true);
 
 const server = Joi.object().keys({
   host,
   port,
   path,
+  tokenPath,
   logEnabled
 }).default();
 

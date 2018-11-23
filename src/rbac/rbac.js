@@ -14,6 +14,8 @@ class RBAC {
     if (error) throw error;
 
     // settings
+    this._enabled = value.enabled;
+    this._defaultRole = value.defaultRole;
     this._logEnabled = value.logEnabled;
 
     // state
@@ -27,6 +29,8 @@ class RBAC {
 
   getSettings() {
     return {
+      enabled: this._enabled,
+      defaultRole: this._defaultRole,
       logEnabled: this._logEnabled
     };
   }
@@ -35,6 +39,8 @@ class RBAC {
     const { error, value } = Joi.validate(settings, schema);
     if (error) throw error;
 
+    this._enabled = value.enabled;
+    this._defaultRole = value.defaultRole;
     this._logEnabled = value.logEnabled;
   }
 
@@ -81,6 +87,8 @@ class RBAC {
   }
 
   checkRole(roleName, action) {
+    if (!this._enabled) return true;
+
     const role = this.getRole(roleName);
     if (!role) {
       this._log({
@@ -89,7 +97,7 @@ class RBAC {
       return false;
     }
 
-    if (role.can[action]) return true;
+    if (role.can.indexOf(action) > -1) return true;
 
     return role.inherits.some(i => {
       const iRole = this.getRole(i);
@@ -149,13 +157,15 @@ class RBAC {
   }
 
   check(userName, action) {
-    const user = this.getUser(userName);
-    if (!user) return false;
+    if (!this._enabled) return true;
 
-    const userRole = this.getRole(user.role);
+    const user = this.getUser(userName);
+
+    const userRoleName = user ? user.role : this._defaultRole;
+    const userRole = this.getRole(userRoleName);
     if (!userRole) return false;
 
-    return this.checkRole(userRole, action);
+    return this.checkRole(userRoleName, action);
   }
 
   _log(message) {
