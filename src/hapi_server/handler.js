@@ -72,7 +72,7 @@ const handler = async (request, h, self) => {
     messageRaw: '',
     args,
     flags,
-    bot: this._parent,
+    bot: self._parent,
     username
   });
 
