@@ -101,7 +101,7 @@ class HapiServer {
       options: {
         validate: {
           query: Joi.object().keys({
-            user: Joi.string().alphanum().max(500).required()
+            user: Joi.string().max(500).required()
           }).default()
         }
       }

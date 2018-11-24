@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const roleName = Joi.string().alphanum().max(500);
-const userName = Joi.string().alphanum().max(500);
+const userName = Joi.string().max(500);
 
 const enabled = Joi.boolean().default(true);
 const defaultRole = Joi.string().alphanum().max(500).default('default');
