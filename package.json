@@ -1,6 +1,6 @@
 {
   "name": "dynamic-twitch-bot",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Dynamically customizable twitch IRC bot",
   "main": "dynamic_twitch_bot.js",
   "scripts": {
