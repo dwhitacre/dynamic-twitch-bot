@@ -50,7 +50,7 @@ class Memory {
 
   async has(itemId) {
     const item = await this.get(itemId);
-    return !!item;
+    return typeof item !== 'undefined';
   }
 
   async get(itemId) {
