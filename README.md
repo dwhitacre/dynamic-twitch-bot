@@ -1,3 +1,5 @@
+> THIS REPO IS DEPRECATED IN FAVOR OF [EASY-TWITCH-BOT](https://github.com/dwhitacre/easy-twitch-bot)
+
 # dynamic-twitch-bot
 
 Dynamically customizable twitch IRC bot. Generate twitch IRC CLI and API from rule definitions.
